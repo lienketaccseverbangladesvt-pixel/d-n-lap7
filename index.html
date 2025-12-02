@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suôn - Portfolio Lập Trình AI</title>
+    <meta name="description" content="Website giới thiệu bản thân của sinh viên Suôn - Chuyên ngành AI">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Markdown Parser (for Gemini responses) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',   /* Sky Blue */
+                        secondary: '#6366f1', /* Indigo */
+                        dark: '#0f172a',      /* Slate 900 */
+                        card: '#1e293b',      /* Slate 800 */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9; 
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #0ea5e9, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Loading animation for AI */
+        .typing-indicator span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #0ea5e9;
+            border-radius: 50%;
+            animation: typing 1s infinite;
+            margin: 0 2px;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        .markdown-content strong { color: #0ea5e9; }
+    </style>
+</head>
+<body class="bg-dark text-slate-300 font-sans selection:bg-primary selection:text-white">
+
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
+        <div class="absolute top-0 right-1/4 w-96 h-96 bg-secondary/20 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-32 left-1/3 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 left-0 bg-dark/80 backdrop-blur-md border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 font-mono font-bold text-2xl text-white">
+                    <span class="text-primary">&lt;</span>Suôn<span class="text-primary">/&gt;</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <!-- Dropdown cho Trang chủ -->
+                        <div class="relative group inline-block">
+                            <a href="#home" class="hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
+                                Trang chủ <i class="fas fa-chevron-down ml-1 text-xs opacity-70"></i>
+                            </a>
+                            <div class="absolute left-0 mt-0 w-48 bg-card border border-slate-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-left z-50">
+                                <a href="#home" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white rounded-t-md">Màn hình chính</a>
+                                <a href="https://drive.google.com/file/d/1_GI8ZTswLlMTvMtuqgbIR8sB8yiclS0a/view?usp=sharing" target="_blank" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white rounded-b-md">
+                                    <i class="fab fa-google-drive mr-2 text-green-500"></i>Tài liệu Drive
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Dropdown cho Giới thiệu (Mới thêm) -->
+                        <div class="relative group inline-block">
+                            <a href="#about" class="hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
+                                Giới thiệu <i class="fas fa-chevron-down ml-1 text-xs opacity-70"></i>
+                            </a>
+                            <div class="absolute left-0 mt-0 w-48 bg-card border border-slate-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-left z-50">
+                                <a href="#about" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white rounded-t-md">Thông tin chi tiết</a>
+                                <!-- Link tới ảnh IMG_0454.jpg -->
+                                <a href="./IMG_0454.jpg" target="_blank" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white rounded-b-md">
+                                    <i class="fas fa-image mr-2 text-purple-400"></i>Ảnh kỷ niệm
+                                </a>
+                            </div>
+                        </div>
+
+                        <a href="#skills" class="hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium">Kỹ năng</a>
+                        <a href="#ai-lab" class="hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1"><i class="fas fa-sparkles text-yellow-400 text-xs"></i> AI Lab</a>
+                        <a href="#contact" class="bg-primary hover:bg-sky-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">Liên hệ</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-card border-b border-slate-700" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Trang chủ</a>
+                <!-- Submenu item for mobile -->
+                <a href="https://drive.google.com/file/d/1_GI8ZTswLlMTvMtuqgbIR8sB8yiclS0a/view?usp=sharing" target="_blank" onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white block px-6 py-2 rounded-md text-sm font-medium border-l-2 border-slate-700 ml-3 bg-slate-800/50">
+                    <i class="fab fa-google-drive mr-2 text-green-500"></i>Tài liệu Drive
+                </a>
+
+                <a href="#about" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Giới thiệu</a>
+                <!-- Submenu item for mobile (Giới thiệu) -->
+                <a href="./IMG_0454.jpg" target="_blank" onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white block px-6 py-2 rounded-md text-sm font-medium border-l-2 border-slate-700 ml-3 bg-slate-800/50">
+                    <i class="fas fa-image mr-2 text-purple-400"></i>Ảnh kỷ niệm
+                </a>
+
+                <a href="#skills" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Kỹ năng</a>
+                <a href="#ai-lab" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"><i class="fas fa-sparkles text-yellow-400"></i> AI Lab</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="text-primary font-bold block px-3 py-2 rounded-md text-base">Liên hệ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse md:flex-row items-center">
+            <div class="w-full md:w-1/2 text-center md:text-left mt-8 md:mt-0">
+                <p class="text-primary font-mono mb-4 text-lg">Xin chào, tôi là</p>
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+                    <span class="gradient-text">Suôn</span>
+                </h1>
+                <h2 class="text-2xl md:text-3xl text-slate-400 mb-6 h-10">
+                    <span id="typewriter" class="font-mono text-secondary"></span><span class="animate-pulse">|</span>
+                </h2>
+                <p class="text-slate-400 text-lg mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                    Sinh viên chuyên ngành <strong class="text-white">Lập trình ứng dụng Trí tuệ nhân tạo</strong>. Tôi đam mê xây dựng các mô hình học máy và giải pháp thông minh để giải quyết vấn đề thực tế.
+                </p>
+                <div class="flex gap-4 justify-center md:justify-start">
+                    <a href="#contact" class="px-8 py-3 bg-primary hover:bg-sky-600 text-white font-semibold rounded-lg shadow-lg shadow-sky-500/30 transition-all transform hover:-translate-y-1">
+                        Liên hệ ngay
+                    </a>
+                    <a href="#ai-lab" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-indigo-500/50 transition-all transform hover:-translate-y-1 flex items-center gap-2">
+                        <i class="fas fa-sparkles"></i> Thử AI Của Tôi
+                    </a>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 flex justify-center relative">
+                <!-- Avatar Circle Background -->
+                <div class="w-64 h-64 md:w-80 md:h-80 relative">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-primary to-secondary rounded-full animate-pulse opacity-75 blur-xl"></div>
+                    <div class="relative w-full h-full rounded-full bg-card border-4 border-slate-700 overflow-hidden flex items-center justify-center">
+                         <!-- Placeholder Icon for User -->
+                         <i class="fas fa-user-astronaut text-9xl text-slate-500"></i>
+                    </div>
+                    <!-- Floating Icons -->
+                    <div class="absolute -top-4 -right-4 bg-card p-3 rounded-lg border border-slate-700 shadow-xl animate-bounce delay-100">
+                        <i class="fab fa-python text-3xl text-yellow-400"></i>
+                    </div>
+                    <div class="absolute bottom-4 -left-8 bg-card p-3 rounded-lg border border-slate-700 shadow-xl animate-bounce delay-700">
+                        <i class="fas fa-brain text-3xl text-pink-500"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-dark/50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">
+                <span class="border-b-4 border-primary pb-2">Thông Tin Cá Nhân</span>
+            </h2>
+            
+            <div class="glass-card rounded-2xl p-8 md:p-12 shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4 font-mono text-sm md:text-base">
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">Họ và tên:</span>
+                            <span class="text-white font-semibold">Suôn</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">Mã sinh viên:</span>
+                            <span class="text-primary font-bold">pk 04597</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">Chuyên ngành:</span>
+                            <span class="text-white text-right">Lập trình ứng dụng AI</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">Email:</span>
+                            <span class="text-white">suon.pk04597@example.com</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">Địa chỉ:</span>
+                            <span class="text-white">Việt Nam</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Tại sao tôi chọn AI?</h3>
+                        <p class="text-slate-400 leading-relaxed mb-4">
+                            Tôi tin rằng trí tuệ nhân tạo là chìa khóa để giải quyết các vấn đề phức tạp trong tương lai. Với mã số sinh viên <strong>pk 04597</strong>, tôi đang nỗ lực học tập và nghiên cứu để trở thành một kỹ sư AI chuyên nghiệp.
+                        </p>
+                        <p class="text-slate-400 leading-relaxed">
+                            Mục tiêu của tôi là phát triển các ứng dụng thông minh có khả năng hỗ trợ con người trong đời sống và công việc hàng ngày.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-white mb-16">
+                <span class="border-b-4 border-secondary pb-2">Kỹ Năng Chuyên Môn</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Skill Card 1 -->
+                <div class="glass-card p-6 rounded-xl hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-2 group">
+                    <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-yellow-500/30">
+                        <i class="fab fa-python text-2xl text-yellow-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Python & Algorithms</h3>
+                    <p class="text-slate-400 text-sm">Thành thạo lập trình Python, xử lý dữ liệu với NumPy, Pandas.</p>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="glass-card p-6 rounded-xl hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-2 group">
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-500/30">
+                        <i class="fas fa-brain text-2xl text-orange-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Machine Learning</h3>
+                    <p class="text-slate-400 text-sm">Scikit-learn, xây dựng mô hình hồi quy, phân loại, clustering.</p>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="glass-card p-6 rounded-xl hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-2 group">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-500/30">
+                        <i class="fas fa-project-diagram text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Deep Learning</h3>
+                    <p class="text-slate-400 text-sm">Kiến thức cơ bản về Neural Networks, TensorFlow/Keras.</p>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="glass-card p-6 rounded-xl hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-2 group">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-500/30">
+                        <i class="fas fa-database text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Data & SQL</h3>
+                    <p class="text-slate-400 text-sm">Truy vấn SQL, tiền xử lý và trực quan hóa dữ liệu (Matplotlib).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW FEATURE: AI Innovation Lab -->
+    <section id="ai-lab" class="py-20 bg-gradient-to-b from-dark to-slate-900 relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <span class="inline-block py-1 px-3 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold mb-4 border border-purple-500/30 uppercase tracking-wide">
+                    Powered by Gemini <i class="fas fa-bolt ml-1"></i>
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    AI Innovation Lab <i class="fas fa-flask text-purple-400 ml-2 animate-pulse"></i>
+                </h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    Bạn đang tìm kiếm ý tưởng cho dự án AI tiếp theo? Nhập một lĩnh vực bất kỳ, trợ lý AI của tôi sẽ gợi ý một giải pháp sáng tạo kèm theo công nghệ phù hợp.
+                </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-1 border-2 border-purple-500/30 shadow-lg shadow-purple-900/20">
+                <div class="bg-dark/80 rounded-xl p-6 md:p-8">
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <input type="text" id="projectTopic" 
+                            class="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                            placeholder="Nhập lĩnh vực (VD: Y tế, Giáo dục, Giao thông, Game...)"
+                            onkeypress="if(event.key === 'Enter') generateProjectIdea()">
+                        
+                        <button onclick="generateProjectIdea()" id="btnGenerate"
+                            class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3 px-8 rounded-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 min-w-[160px]">
+                            <span>Gợi Ý Ngay</span>
+                            <i class="fas fa-magic"></i>
+                        </button>
+                    </div>
+
+                    <!-- AI Result Container -->
+                    <div id="aiResult" class="hidden">
+                        <div class="border-t border-slate-700 pt-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-robot text-white text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-purple-400 font-bold text-sm mb-1 uppercase tracking-wide">Gemini Suggestion</h4>
+                                    <div id="aiContent" class="text-slate-300 text-sm md:text-base leading-relaxed markdown-content">
+                                        <!-- Content goes here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="aiLoading" class="hidden py-8 text-center">
+                        <div class="typing-indicator flex justify-center mb-2">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <p class="text-slate-500 text-sm">Đang phân tích và lên ý tưởng...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Placeholder Section -->
+    <section class="py-20 bg-dark/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">Dự Án Đã Thực Hiện</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Project 1 -->
+                <div class="bg-card rounded-xl overflow-hidden border border-slate-700 hover:border-primary transition-colors">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative group">
+                        <i class="fas fa-robot text-6xl text-slate-500"></i>
+                        <div class="absolute inset-0 bg-primary/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-white font-bold text-lg">Đang phát triển</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Chatbot Tư Vấn Tuyển Sinh</h3>
+                        <p class="text-slate-400 text-sm mb-4">Sử dụng NLP để trả lời tự động các câu hỏi về quy chế tuyển sinh.</p>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 bg-slate-700 rounded text-xs text-primary font-mono">Python</span>
+                            <span class="px-2 py-1 bg-slate-700 rounded text-xs text-primary font-mono">NLP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bg-card rounded-xl overflow-hidden border border-slate-700 hover:border-secondary transition-colors">
+                    <div class="h-48 bg-slate-700 flex items-center justify-center relative group">
+                        <i class="fas fa-camera text-6xl text-slate-500"></i>
+                         <div class="absolute inset-0 bg-secondary/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-white font-bold text-lg">Bài tập lớn</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Nhận Diện Khuôn Mặt</h3>
+                        <p class="text-slate-400 text-sm mb-4">Ứng dụng điểm danh sinh viên tự động sử dụng OpenCV và CNN.</p>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 bg-slate-700 rounded text-xs text-primary font-mono">OpenCV</span>
+                            <span class="px-2 py-1 bg-slate-700 rounded text-xs text-primary font-mono">TensorFlow</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 relative">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-8">Liên Hệ</h2>
+            <p class="text-slate-400 mb-8">Bạn có ý tưởng dự án thú vị về AI? Hãy kết nối với tôi!</p>
+            
+            <div class="glass-card p-8 rounded-2xl text-left relative">
+                <form onsubmit="handleSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Họ tên</label>
+                        <input type="text" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Nhập tên của bạn">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Email</label>
+                        <input type="email" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="email@example.com">
+                    </div>
+                    <div class="relative">
+                        <label class="block text-sm font-medium text-slate-400 mb-1 flex justify-between">
+                            Tin nhắn
+                            <!-- AI Rewrite Button -->
+                            <button type="button" onclick="rewriteMessage()" class="text-xs text-primary hover:text-white flex items-center gap-1 transition-colors">
+                                <i class="fas fa-sparkles"></i> Dùng AI viết lại
+                            </button>
+                        </label>
+                        <textarea id="messageInput" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Nội dung..."></textarea>
+                        
+                        <!-- AI Loading Overlay for Textarea -->
+                        <div id="rewriteLoading" class="hidden absolute inset-0 bg-slate-900/80 flex items-center justify-center rounded-lg z-10 backdrop-blur-sm">
+                            <div class="text-primary text-sm font-bold flex flex-col items-center">
+                                <i class="fas fa-circle-notch fa-spin text-2xl mb-2"></i>
+                                Đang viết lại...
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-bold py-3 rounded-lg transition-all transform active:scale-95">
+                        Gửi Tin Nhắn
+                    </button>
+                </form>
+            </div>
+
+            <!-- Social Links -->
+            <div class="mt-12 flex justify-center space-x-6">
+                <a href="#" class="text-slate-400 hover:text-white text-2xl transition-colors"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-slate-400 hover:text-blue-600 text-2xl transition-colors"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-slate-400 hover:text-blue-400 text-2xl transition-colors"><i class="fab fa-facebook"></i></a>
+            </div>
+        </div>
+        
+        <!-- Custom Notification -->
+        <div id="toast" class="fixed bottom-5 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-24 transition-transform duration-300 flex items-center gap-3 z-50">
+            <i class="fas fa-check-circle"></i>
+            <span>Đã gửi tin nhắn thành công!</span>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark border-t border-slate-800 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-500 text-sm">
+                &copy; 2024 Suôn (pk 04597). All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // --- CONFIGURATION ---
+        // Vui lòng điền API Key của bạn vào đây
+        const apiKey = "AIzaSyA5XsK3A1Gz8_McGaJLeYA6sLpeBWV4ImY"; 
+        // ---------------------
+
+        // GEMINI API FUNCTION
+        async function callGemini(prompt, systemInstruction = "") {
+            if (!apiKey) {
+                alert("Vui lòng nhập API Key vào biến 'apiKey' trong code để sử dụng tính năng AI!");
+                return null;
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || "Không thể tạo nội dung.";
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "Đã xảy ra lỗi khi kết nối với AI. Vui lòng thử lại sau.";
+            }
+        }
+
+        // Feature 1: AI Project Generator
+        async function generateProjectIdea() {
+            const topic = document.getElementById('projectTopic').value.trim();
+            if (!topic) return alert("Vui lòng nhập một lĩnh vực!");
+
+            // Show loading, hide result
+            document.getElementById('aiLoading').classList.remove('hidden');
+            document.getElementById('aiResult').classList.add('hidden');
+            document.getElementById('btnGenerate').disabled = true;
+            document.getElementById('btnGenerate').classList.add('opacity-50', 'cursor-not-allowed');
+
+            const systemPrompt = "Bạn là một chuyên gia tư vấn dự án AI sáng tạo. Hãy đề xuất một ý tưởng dự án lập trình AI thú vị, ngắn gọn và khả thi cho sinh viên dựa trên lĩnh vực người dùng cung cấp. Bao gồm: Tên dự án, Mô tả ngắn (2-3 câu), và Công nghệ sử dụng (Tech Stack). Format trả về dạng Markdown.";
+            const userPrompt = `Hãy gợi ý một ý tưởng dự án AI về chủ đề: ${topic}`;
+
+            const result = await callGemini(userPrompt, systemPrompt);
+
+            // Hide loading
+            document.getElementById('aiLoading').classList.add('hidden');
+            document.getElementById('btnGenerate').disabled = false;
+            document.getElementById('btnGenerate').classList.remove('opacity-50', 'cursor-not-allowed');
+
+            if (result) {
+                // Show result
+                const contentDiv = document.getElementById('aiContent');
+                contentDiv.innerHTML = marked.parse(result); // Use marked.js to render markdown
+                document.getElementById('aiResult').classList.remove('hidden');
+            }
+        }
+
+        // Feature 2: Contact Rewrite
+        async function rewriteMessage() {
+            const input = document.getElementById('messageInput');
+            const originalText = input.value.trim();
+            
+            if (!originalText) return alert("Vui lòng nhập nội dung tin nhắn trước!");
+
+            document.getElementById('rewriteLoading').classList.remove('hidden');
+
+            const systemPrompt = "Bạn là trợ lý giao tiếp chuyên nghiệp. Hãy viết lại nội dung tin nhắn của người dùng gửi cho một lập trình viên AI sao cho lịch sự, chuyên nghiệp, gãy gọn và ấn tượng hơn. Giữ nguyên ý chính. Chỉ trả về nội dung đã viết lại, không thêm lời dẫn.";
+            
+            const result = await callGemini(originalText, systemPrompt);
+
+            document.getElementById('rewriteLoading').classList.add('hidden');
+
+            if (result) {
+                input.value = result.trim();
+            }
+        }
+
+        // --- EXISTING JS ---
+
+        // Typewriter Effect
+        const textElement = document.getElementById('typewriter');
+        const phrases = ["AI Application Developer", "Data Science Enthusiast", "Future Engineer"];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                typeSpeed = 2000; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        document.addEventListener('DOMContentLoaded', type);
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Form Submit Simulation
+        function handleSubmit(e) {
+            e.preventDefault();
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-24');
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-24');
+            }, 3000);
+            
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>
