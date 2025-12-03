@@ -488,15 +488,12 @@
     <script>
         // --- CONFIGURATION ---
         // Vui lòng điền API Key của bạn vào đây
-        const apiKey = "AIzaSyA5XsK3A1Gz8_McGaJLeYA6sLpeBWV4ImY"; 
+        const apiKey = ""; 
         // ---------------------
 
         // GEMINI API FUNCTION
         async function callGemini(prompt, systemInstruction = "") {
-            if (!apiKey) {
-                alert("Vui lòng nhập API Key vào biến 'apiKey' trong code để sử dụng tính năng AI!");
-                return null;
-            }
+            // Đã xóa phần kiểm tra API Key để dùng key mặc định của môi trường
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
